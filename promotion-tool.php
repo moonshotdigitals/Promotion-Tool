@@ -9,14 +9,14 @@
  * that starts the plugin.
  *
  * @link              https://themoonshot.digital
- * @since             1.0.5
+ * @since             1.0.6
  * @package           Promotion_Tool
  *
  * @wordpress-plugin
  * Plugin Name:       Promotion Tool
  * Plugin URI:        https://themoonshot.digital
  * Description:       Incentive higher quantity purchases. Increasing sales.
- * Version:           1.0.5
+ * Version:           1.0.6
  * Author:            Moonshot
  * Author URI:        https://themoonshot.digital
  * License:           GPL-2.0+
@@ -32,10 +32,10 @@ if ( ! defined( 'WPINC' ) ) {
 
 /**
  * Currently plugin version.
- * Start at version 1.0.5 and use SemVer - https://semver.org
+ * Start at version 1.0.6 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'PROMOTION_TOOL_VERSION', '1.0.5' );
+define( 'PROMOTION_TOOL_VERSION', '1.0.6' );
 
 /**
  * The code that runs during plugin activation.
@@ -81,7 +81,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-promotion-tool.php';
  * then kicking off the plugin from this point in the file does
  * not affect the page life cycle.
  *
- * @since    1.0.5
+ * @since    1.0.6
  */
 function run_promotion_tool() {
 
