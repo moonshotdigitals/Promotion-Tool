@@ -74,6 +74,9 @@ Fixing Errors.
 = 1.0.9 =
 Readme Updation.
 
+= 1.0.10 =
+Version Updation.
+
 == Upgrade Notice ==
 
 = 1.0.0 =
