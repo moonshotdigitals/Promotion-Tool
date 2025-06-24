@@ -65,6 +65,15 @@ Yes. You can lock quantity inputs for bonus items and ensure users cannot manipu
 * Auto-application of bonus items
 * WooCommerce 6.5+ compatible
 
+= 1.0.7 =
+Multiple (Y) produuct feature added.
+
+= 1.0.8 =
+Fixing Errors.
+
+= 1.0.9 =
+Readme Updation.
+
 == Upgrade Notice ==
 
 = 1.0.0 =
