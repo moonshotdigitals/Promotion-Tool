@@ -75,3 +75,6 @@ Initial release of BOGO Promotion Tool with dynamic pricing and bonus item suppo
 = 1.0.7 =
 Multiple (Y) produuct feature added.
 
+= 1.0.8 =
+Fixing Errors.
+
