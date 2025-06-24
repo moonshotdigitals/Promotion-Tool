@@ -1,0 +1,25 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+
+/* Admin Styles for Promotion Tool */
+.wrap h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+.form-table th {
+    width: 220px;
+}
+.updated {
+    background-color: #dff0d8;
+    border-left: 4px solid #3c763d;
+    padding: 10px;
+    margin-top: 15px;
+}
+.mt-top{
+    margin-top: 6px;
+}
+.mt-bot{
+    margin-bottom: 6px;
+}
