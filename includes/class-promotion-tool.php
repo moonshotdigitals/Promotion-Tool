@@ -507,12 +507,12 @@ class Promotion_Tool {
 	        $remaining    = $required_qty - $product_qty;
 	        $removed_any  = false;
 
-	        foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item) {
-	            if (in_array($cart_item['product_id'], $get_product_ids)) {
-	                WC()->cart->remove_cart_item($cart_item_key);
-	                $removed_any = true;
-	            }
-	        }
+	        // foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item) {
+	        //     if (in_array($cart_item['product_id'], $get_product_ids)) {
+	        //         WC()->cart->remove_cart_item($cart_item_key);
+	        //         $removed_any = true;
+	        //     }
+	        // }
 
 	        wp_send_json_success([
 	            'rule_id'       => $rule['id'],

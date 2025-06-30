@@ -318,15 +318,15 @@ jQuery(document).ready(function($) {
                         }
                     });
                 } else if (data.status === 'not_yet') {
-                    if(data.now_removed){
-                        location.reload()
-                    }
-                    Swal.fire({
-                        title: 'Want a reward?',
-                        text: data.message,
-                        icon: 'info',
-                        confirmButtonText: 'OK'
-                    });
+                    // if(data.now_removed){
+                    //     location.reload()
+                    // }
+                    // Swal.fire({
+                    //     title: 'Want a reward?',
+                    //     text: data.message,
+                    //     icon: 'info',
+                    //     confirmButtonText: 'OK'
+                    // });
                 }
             });
         });
