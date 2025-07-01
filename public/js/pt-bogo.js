@@ -7,63 +7,100 @@ jQuery(document).ready(function($) {
      * Render and show the BOGO Reward Modal
      */
     function showBogoRewardModal(data) {
-        let productList = '<div class="bogo-products"><ul style="list-style:none;padding:0;">';
+        // let productList = '<div class="bogo-products"><ul style="list-style:none;padding:0;">';
+
+        // data.products.forEach(prod => {
+        //     productList += `
+        //         <li style="margin-bottom:15px;display:flex;align-items:center;">
+        //             <img src="${prod.image}" alt="${prod.title}" style="width:60px;height:60px;margin-right:10px;border-radius:6px;" />
+        //             <div>
+        //                 <div><strong>${prod.title}</strong></div>
+        //                 <button class="pt-add-bogo-item button" 
+        //                         data-id="${prod.id}" data-rule="${data.rule_id}"
+        //                         style="margin-top:5px;">
+        //                     ${prod.label}
+        //                 </button>
+        //             </div>
+        //         </li>`;
+        // });
+
+        // productList += '</ul></div>';
+
+        let productList = '<div class="poup-with-affiliate-unlocked-reward"><ul class="reward-product-list">';
 
         data.products.forEach(prod => {
-            productList += `
-                <li style="margin-bottom:15px;display:flex;align-items:center;">
-                    <img src="${prod.image}" alt="${prod.title}" style="width:60px;height:60px;margin-right:10px;border-radius:6px;" />
-                    <div>
-                        <div><strong>${prod.title}</strong></div>
-                        <button class="pt-add-bogo-item button" 
-                                data-id="${prod.id}" data-rule="${data.rule_id}"
-                                style="margin-top:5px;">
-                            ${prod.label}
-                        </button>
-                    </div>
-                </li>`;
+          productList += `
+            <li class="reward-product-item">
+              <img src="${prod.image}" alt="${prod.title}" class="product-img" />
+              <div class="product-content">
+                <div class="product-title">${prod.title}</div>
+                <button class="get-free-button pt-add-bogo-item" 
+                        data-id="${prod.id}" 
+                        data-rule="${data.rule_id}">
+                  ${prod.label}
+                </button>
+              </div>
+            </li>`;
         });
 
         productList += '</ul></div>';
 
-        Swal.fire({
-            title: '🎁 You’ve unlocked a reward!',
-            html: productList,
-            showConfirmButton: false,
-            customClass: {
-                popup: 'bogo-reward-modal'
-            },
-            didRender: () => {
-                $('.pt-add-bogo-item').on('click', function(e) {
-                    e.preventDefault();
-                    const pid = $(this).data('id');
+        if(data.type=="bogo_percent"){
+            $('.poup-with-affiliate-unlocked-reward.popup2 .popup-subtext').html("Get a Discounted product!")
+        }else{
+            $('.poup-with-affiliate-unlocked-reward.popup2 .popup-subtext').html("Get Another Product Free!")
+        }
+        $('.poup-with-affiliate-unlocked-reward.popup2').fadeIn()
+        $('.poup-with-affiliate-unlocked-reward .productlists').html(productList)
 
-                    $.post(wc_add_to_cart_params.ajax_url, {
-                        action: 'woocommerce_ajax_add_to_cart',
-                        product_id: pid,
-                        quantity: 1
-                    }, function(response) {
-                        Swal.fire('✅ Gift Added!', '', 'success');
-                        $(document.body).trigger('added_to_cart', [response.fragments, response.cart_hash, $(this)]);
-                    });
-                });
-            }
-        });
+        // Swal.fire({
+        //     title: '🎁 You’ve unlocked a reward!',
+        //     html: productList,
+        //     showConfirmButton: false,
+        //     customClass: {
+        //         popup: 'bogo-reward-modal'
+        //     },
+        //     didRender: () => {
+        //         $('.pt-add-bogo-item').on('click', function(e) {
+        //             e.preventDefault();
+        //             const pid = $(this).data('id');
+
+        //             $.post(wc_add_to_cart_params.ajax_url, {
+        //                 action: 'woocommerce_ajax_add_to_cart',
+        //                 product_id: pid,
+        //                 quantity: 1
+        //             }, function(response) {
+        //                 Swal.fire('✅ Gift Added!', '', 'success');
+        //                 $(document.body).trigger('added_to_cart', [response.fragments, response.cart_hash, $(this)]);
+        //             });
+        //         });
+        //     }
+        // });
+
     }
 
     /**
      * Show "Not Qualified Yet" Modal
      */
-    function showBogoHintModal(message) {
-        Swal.fire({
-            title: 'Want a reward?',
-            text: message,
-            icon: 'info',
-            confirmButtonText: 'OK',
-            customClass: {
-                popup: 'bogo-hint-modal'
-            }
-        });
+    function showBogoHintModal(data) {
+        // Swal.fire({
+        //     title: 'Want a reward?',
+        //     text: message,
+        //     icon: 'info',
+        //     confirmButtonText: 'OK',
+        //     customClass: {
+        //         popup: 'bogo-hint-modal'
+        //     }
+        // });
+        if(data.type=="bogo_free"){
+            $('.with-affiliate-custom-popup.popup1 img').attr('src', $('#buy_get_free').val())
+            $('.with-affiliate-custom-popup.popup1 h2.popup-title').html("Want A Free Product<br>As A Reward?")
+        }else{
+            $('.with-affiliate-custom-popup.popup1 img').attr('src', $('#buy_get_discounted').val())
+            $('.with-affiliate-custom-popup.popup1 h2.popup-title').html("Want A Discounted Product<br>As A Reward?")
+        }
+        $('.with-affiliate-custom-popup.popup1').css('display', 'block')
+        $('.with-affiliate-custom-popup.popup1 .popup-subtitle').html(data.message)
     }
 
     /**
@@ -84,7 +121,7 @@ jQuery(document).ready(function($) {
                 showBogoRewardModal(data);
                 shownBogoForProduct.add(productId);
             } else if (data.status === 'not_yet') {
-                showBogoHintModal(data.message);
+                showBogoHintModal(data);
             }
         });
     }
@@ -151,84 +188,6 @@ jQuery(document).ready(function($) {
 
 });
 
-
-// jQuery(document).ready(function($) {
-//     $('body').on('added_to_cart', function(event, fragments, cart_hash, $button) {
-//         const productId = $button.data('product_id');
-
-//         $.post(pt_bogo_data.ajax_url, {
-//             action: 'pt_check_bogo_offer',
-//             product_id: productId,
-//             nonce: pt_bogo_data.nonce
-//         }, function(response) {
-//             // console.log(response)
-//             // return;
-//             if (!response.success) return;
-
-//             const data = response.data;
-
-//             if (data.status === 'qualified') {
-//                 let productList = '<div class="bogo-products"><ul style="list-style:none;padding:0;">';
-
-//                 data.products.forEach(prod => {
-//                     productList += `
-//                         <li style="margin-bottom:15px;display:flex;align-items:center;">
-//                             <img src="${prod.image}" alt="${prod.title}" style="width:60px;height:60px;margin-right:10px;border-radius:6px;" />
-//                             <div>
-//                                 <div><strong>${prod.title}</strong></div>
-//                                 <button class="pt-add-bogo-item button" 
-//                                         data-id="${prod.id}" data-rule="${response.data.rule_id}"
-//                                         style="margin-top:5px;">
-//                                     ${prod.label}
-//                                 </button>
-//                             </div>
-//                         </li>`;
-//                 });
-
-//                 productList += '</ul></div>';
-
-//                 Swal.fire({
-//                     title: '🎁 You’ve unlocked a reward!',
-//                     html: productList,
-//                     showConfirmButton: false, // Don't override with "Awesome"
-//                     customClass: {
-//                         popup: 'bogo-reward-modal'
-//                     },
-//                     didRender: () => {
-//                         // Bind click event to .pt-add-bogo-item buttons
-//                         $('.pt-add-bogo-item').on('click', function(e) {
-//                             e.preventDefault();
-//                             const pid = $(this).data('product_id');
-//                             // WooCommerce default add to cart
-//                             $.post(wc_add_to_cart_params.ajax_url, {
-//                                 action: 'woocommerce_ajax_add_to_cart',
-//                                 product_id: pid,
-//                                 quantity: 1
-//                             }, function(response) {
-//                                 // Optionally show feedback
-//                                 Swal.fire('✅ Gift Added!', '', 'success');
-//                                 $(document.body).trigger('added_to_cart', [response.fragments, response.cart_hash, $(this)]);
-//                             });
-//                         });
-//                     }
-//                 });
-
-//             } else if (data.status === 'not_yet') {
-//                 Swal.fire({
-//                     title: 'Want a reward?',
-//                     text: data.message,
-//                     icon: 'info',
-//                     confirmButtonText: 'OK',
-//                     customClass: {
-//                         popup: 'bogo-hint-modal'
-//                     }
-//                 });
-//             }
-//         });
-//     });
-// });
-
-
 jQuery(document).ready(function($) {
     $('body').on('click', '.pt-add-bogo-item', function() {
         let productId = $(this).data('id');
@@ -275,48 +234,70 @@ jQuery(document).ready(function($) {
                 const data = response.data;
 
                 if (data.status === 'qualified') {
-                    let productList = '<div class="bogo-products"><ul style="list-style:none;padding:0;">';
+                    // let productList = '<div class="bogo-products"><ul style="list-style:none;padding:0;">';
+
+                    // data.products.forEach(prod => {
+                    //     productList += `
+                    //         <li style="margin-bottom:15px;display:flex;align-items:center;">
+                    //             <img src="${prod.image}" alt="${prod.title}" style="width:60px;height:60px;margin-right:10px;border-radius:6px;" />
+                    //             <div>
+                    //                 <div><strong>${prod.title}</strong></div>
+                    //                 <button class="pt-add-bogo-item button" 
+                    //                         data-id="${prod.id}" data-rule="${response.data.rule_id}"
+                    //                         style="margin-top:5px;">
+                    //                     ${prod.label}
+                    //                 </button>
+                    //             </div>
+                    //         </li>`;
+                    // });
+
+                    // productList += '</ul></div>';
+
+                    let productList = '<div class="poup-with-affiliate-unlocked-reward"><ul class="reward-product-list">';
 
                     data.products.forEach(prod => {
-                        productList += `
-                            <li style="margin-bottom:15px;display:flex;align-items:center;">
-                                <img src="${prod.image}" alt="${prod.title}" style="width:60px;height:60px;margin-right:10px;border-radius:6px;" />
-                                <div>
-                                    <div><strong>${prod.title}</strong></div>
-                                    <button class="pt-add-bogo-item button" 
-                                            data-id="${prod.id}" data-rule="${response.data.rule_id}"
-                                            style="margin-top:5px;">
-                                        ${prod.label}
-                                    </button>
-                                </div>
-                            </li>`;
+                      productList += `
+                        <li class="reward-product-item">
+                          <img src="${prod.image}" alt="${prod.title}" class="product-img" />
+                          <div class="product-content">
+                            <div class="product-title">${prod.title}</div>
+                            <button class="get-free-button pt-add-bogo-item" 
+                                    data-id="${prod.id}" 
+                                    data-rule="${data.rule_id}">
+                              ${prod.label}
+                            </button>
+                          </div>
+                        </li>`;
                     });
 
                     productList += '</ul></div>';
 
-                    Swal.fire({
-                        title: '🎁 Reward Unlocked!',
-                        html: productList,
-                        showConfirmButton: false,
-                        customClass: {
-                            popup: 'bogo-reward-modal'
-                        },
-                        didRender: () => {
-                            $('.pt-add-bogo-item').on('click', function(e) {
-                                e.preventDefault();
-                                const pid = $(this).data('product_id');
+                    $('.poup-with-affiliate-unlocked-reward.popup2').fadeIn()
+                    $('.poup-with-affiliate-unlocked-reward .productlists').html(productList)
 
-                                $.post(wc_add_to_cart_params.ajax_url, {
-                                    action: 'woocommerce_ajax_add_to_cart',
-                                    product_id: pid,
-                                    quantity: 1
-                                }, function(response) {
-                                    Swal.fire('✅ Gift Added!', '', 'success');
-                                    $(document.body).trigger('added_to_cart', [response.fragments, response.cart_hash, $(this)]);
-                                });
-                            });
-                        }
-                    });
+                    // Swal.fire({
+                    //     title: '🎁 Reward Unlocked!',
+                    //     html: productList,
+                    //     showConfirmButton: false,
+                    //     customClass: {
+                    //         popup: 'bogo-reward-modal'
+                    //     },
+                    //     didRender: () => {
+                    //         $('.pt-add-bogo-item').on('click', function(e) {
+                    //             e.preventDefault();
+                    //             const pid = $(this).data('product_id');
+
+                    //             $.post(wc_add_to_cart_params.ajax_url, {
+                    //                 action: 'woocommerce_ajax_add_to_cart',
+                    //                 product_id: pid,
+                    //                 quantity: 1
+                    //             }, function(response) {
+                    //                 Swal.fire('✅ Gift Added!', '', 'success');
+                    //                 $(document.body).trigger('added_to_cart', [response.fragments, response.cart_hash, $(this)]);
+                    //             });
+                    //         });
+                    //     }
+                    // });
                 } else if (data.status === 'not_yet') {
                     // if(data.now_removed){
                     //     location.reload()
@@ -354,3 +335,13 @@ jQuery(document).ready(function($) {
         }
     }, 3000);
 });
+
+jQuery(document).ready(function($) {
+    $('.with-affiliate-custom-popup .popup-button').on('click', function () {
+      $('.with-affiliate-custom-popup').fadeOut();
+    });
+
+    $('.poup-with-affiliate-unlocked-reward.popup2 .popup-close span').on('click', function () {
+      $('.poup-with-affiliate-unlocked-reward.popup2').fadeOut();
+    });
+})

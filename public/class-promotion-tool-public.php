@@ -64,6 +64,62 @@ class Promotion_Tool_Public {
 
 		add_filter('woocommerce_cart_item_name', [$this,'pt_show_bogo_label_in_cart'], 10, 3);
 
+		add_filter('wp_footer', [$this,'pt_with_influence_custom_popups'], 10, 3);
+
+	}
+
+	public function pt_with_influence_custom_popups() {
+		?>
+
+		<input type="hidden" value="<?php echo plugin_dir_url( __FILE__ ) . 'assets/gift.svg'; ?>" id="buy_get_free">
+		<input type="hidden" value="<?php echo plugin_dir_url( __FILE__ ) . 'assets/disc.svg'; ?>" id="buy_get_discounted">
+
+		<div class="with-affiliate-custom-popup popup1">
+		  <div class="popup-overlay">
+		    <div class="popup-box">
+		      <img src="#" alt="Reward Box" class="popup-image" />
+
+		      <h2 class="popup-title">
+		        Want A Free Product<br>As A Reward?
+		      </h2>
+
+		      <p class="popup-subtitle">
+		        Add 2 more to unlock: Get 1 free!
+		      </p>
+
+		      <button class="popup-button">Ok</button>
+		    </div>
+		  </div>
+		</div>
+
+		<div class="poup-with-affiliate-unlocked-reward popup2">
+		  <div class="popup-overlay">
+		    <div class="popup-container">
+			  <span class="popup-close"><span>&#10005;</span></span>
+		      <img src="<?php echo plugin_dir_url( __FILE__ ) . 'assets/unlocked.svg'; ?>" alt="Gift Icon" class="popup-gift-image" />
+
+		      <div class="popup-headline">You’ve Unlocked<br>A Reward!</div>
+		      <div class="popup-subtext">Get Another Product Free!</div>
+
+		      <div class="productlists">
+
+		      </div>
+
+		      <!-- <ul class="reward-product-list">
+		        <li class="reward-product-item">
+		          <img src="f70ed769-8180-444e-9a6f-d588551fab27.png" alt="Beauty Gummies" class="product-img" />
+		          <div class="product-content">
+		            <div class="product-title">Beauty Gummies 60<br>(Skin, Hair, Nails)</div>
+		            <button class="get-free-button">Get Free</button>
+		          </div>
+		        </li>
+		      </ul> -->
+
+		    </div>
+		  </div>
+		</div>
+
+		<?php
 	}
 
 	public function pt_show_bogo_label_in_cart_old($name, $cart_item, $cart_item_key) {

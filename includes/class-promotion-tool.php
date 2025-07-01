@@ -262,6 +262,7 @@ class Promotion_Tool {
 	            wp_send_json_success([
 	                'rule_id'  => $rule['id'],
 	                'status'   => 'qualified',
+	                'type' => $rule['bogo_type'],
 	                'products' => $products
 	            ]);
 	        }
@@ -383,6 +384,7 @@ class Promotion_Tool {
 	            wp_send_json_success([
 	                'rule_id'  => $rule['id'],
 	                'status'   => 'qualified',
+	                'type' => $rule['bogo_type'],
 	                'products' => $products,
 	            ]);
 	        }
@@ -406,6 +408,7 @@ class Promotion_Tool {
 	            'current_qty'   => $product_qty,
 	            'remaining_qty' => $remaining,
 	            'now_removed'   => $removed_any,
+	            'type' => $rule['bogo_type'],
 	            'message'       => sprintf(
 	                'Add %d more to unlock: %s',
 	                $remaining,
@@ -499,7 +502,8 @@ class Promotion_Tool {
 	                'rule_id'   => $rule['id'],
 	                'status'    => 'qualified',
 	                'title'     => $rule_title,
-	                'products'  => $products,
+	                'type' => $rule['bogo_type'],
+	                'products'  => $products
 	            ]);
 	        }
 
@@ -522,6 +526,7 @@ class Promotion_Tool {
 	            'current_qty'   => $product_qty,
 	            'remaining_qty' => $remaining,
 	            'now_removed'   => $removed_any,
+	            'type' => $rule['bogo_type'],
 	            'message'       => sprintf(
 	                'Add %d more to unlock: %s',
 	                $remaining,
