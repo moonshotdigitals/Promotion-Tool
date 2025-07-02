@@ -301,3 +301,7 @@
 .with-affiliate-custom-popup .popup-title, .with-affiliate-custom-popup .popup-subtitle, .with-affiliate-custom-popup button{
     font-family: "Quicksand", Sans-serif;
 }
+
+.woocommerce-checkout .bogo-applied .quantity {
+    display: none !important;
+}

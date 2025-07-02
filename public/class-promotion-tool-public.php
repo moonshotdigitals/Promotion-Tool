@@ -56,16 +56,25 @@ class Promotion_Tool_Public {
 
 		add_filter('woocommerce_cart_item_quantity', [$this,'pt_lock_bogo_bonus_quantity_input'], 10, 3);
 
-		// add_filter('woocommerce_cart_item_remove_link', [$this,'pt_disable_remove_for_bonus_products'], 10, 2);
-
-		// add_action('woocommerce_after_cart_item_quantity_update', [$this,'pt_force_bonus_product_quantity'], 10, 4);
-
 		add_filter('woocommerce_cart_item_quantity', [$this, 'add_product_id_to_cart_qty_input'], 10, 3);
 
 		add_filter('woocommerce_cart_item_name', [$this,'pt_show_bogo_label_in_cart'], 10, 3);
 
 		add_filter('wp_footer', [$this,'pt_with_influence_custom_popups'], 10, 3);
 
+		add_filter('woocommerce_cart_item_class', [$this,'add_bogo_class_to_cart_item'], 10, 3);
+
+	}
+
+	public function add_bogo_class_to_cart_item($class, $cart_item, $cart_item_key) {
+	    if (!is_checkout()) return $class;
+
+	    // Check for your BOGO rule identifier in cart item meta
+	    if (!empty($cart_item['pt_bogo_rule_id'])) {
+	        $class .= ' bogo-applied';
+	    }
+
+	    return $class;
 	}
 
 	public function pt_with_influence_custom_popups() {
@@ -105,30 +114,11 @@ class Promotion_Tool_Public {
 
 		      </div>
 
-		      <!-- <ul class="reward-product-list">
-		        <li class="reward-product-item">
-		          <img src="f70ed769-8180-444e-9a6f-d588551fab27.png" alt="Beauty Gummies" class="product-img" />
-		          <div class="product-content">
-		            <div class="product-title">Beauty Gummies 60<br>(Skin, Hair, Nails)</div>
-		            <button class="get-free-button">Get Free</button>
-		          </div>
-		        </li>
-		      </ul> -->
-
 		    </div>
 		  </div>
 		</div>
 
 		<?php
-	}
-
-	public function pt_show_bogo_label_in_cart_old($name, $cart_item, $cart_item_key) {
-	    if (!empty($cart_item['pt_bogo_rule_label'])) {
-	        $label = esc_html($cart_item['pt_bogo_rule_label']);
-	        $name .= '<div class="pt-bogo-label" style="color: #38a169; font-size: 12px;">(Offer: ' . $label . ')</div>';
-	    }
-
-	    return $name;
 	}
 
 	public function pt_show_bogo_label_in_cart($name, $cart_item, $cart_item_key) {
@@ -197,13 +187,6 @@ class Promotion_Tool_Public {
         return $product_quantity;
     }
 
-	public function pt_lock_bogo_bonus_quantity_input_old($quantity_html, $cart_item_key, $cart_item) {
-	    if (!empty($cart_item['pt_bogo_rule_id'])) {
-	        return '<span class="pt-bogo-locked-qty">' . esc_html($cart_item['quantity']) . '</span>';
-	    }
-	    return $quantity_html;
-	}
-
 	public function pt_lock_bogo_bonus_quantity_input($quantity_html, $cart_item_key, $cart_item) {
 	    // If it's not a BOGO reward, don't interfere
 	    if (empty($cart_item['pt_bogo_rule_id'])) {
@@ -254,23 +237,6 @@ class Promotion_Tool_Public {
 	    // ✅ Lock the quantity (BOGO rule is still valid)
 	    return '<span class="pt-bogo-locked-qty">' . esc_html($cart_item['quantity']) . '</span>';
 	}
-
-	public function pt_disable_remove_for_bonus_products($link, $cart_item_key) {
-	    $cart = WC()->cart->get_cart();
-	    if (!empty($cart[$cart_item_key]['pt_bogo_rule_id'])) {
-	        return $link.'<span class="pt-bogo-locked-remove" title="Bonus product can’t be removed">🎁</span>';
-	    }
-	    return $link;
-	}
-
-	public function pt_force_bonus_product_quantity($cart_item_key, $quantity, $old_quantity, $cart) {
-	    if (!empty($cart->cart_contents[$cart_item_key]['pt_bogo_rule_id']) && $quantity !== 1) {
-	        $cart->cart_contents[$cart_item_key]['quantity'] = 1;
-	        wc_add_notice(__('Bonus product quantity reset to 1.'), 'notice');
-	    }
-	}
-
-
 
 	public function pt_get_active_bogo_rules() {
 	    $args = [
@@ -335,21 +301,6 @@ class Promotion_Tool_Public {
 	    }
 	}
 
-	public function pt_handle_bogo_free_old($cart, $rule) {
-	    $buy_ids = $rule['buy_products'];
-	    $get_ids = $rule['get_products'];
-
-	    foreach ($cart->get_cart() as $key => $item) {
-	        if (in_array($item['product_id'], $buy_ids)) {
-	            foreach ($cart->get_cart() as $get_key => $get_item) {
-	                if (in_array($get_item['product_id'], $get_ids) && $get_item['product_id'] !== $item['product_id']) {
-	                    $cart->cart_contents[$get_key]['data']->set_price(0);
-	                }
-	            }
-	        }
-	    }
-	}
-
 	public function pt_handle_bogo_free($cart, $rule) {
 	    $buy_ids      = (array) $rule['buy_products'];
 	    $get_ids      = (array) $rule['get_products'];
@@ -391,73 +342,6 @@ class Promotion_Tool_Public {
 
 	            unset($cart->cart_contents[$get_key]['pt_bogo_rule_id']);
 	            unset($cart->cart_contents[$get_key]['pt_bogo_rule_label']);
-	        }
-	    }
-	}
-
-	public function pt_handle_bogo_free_old_again($cart, $rule) {
-	    $buy_ids = $rule['buy_products'];       // array of product IDs to buy
-	    $get_ids = $rule['get_products'];       // array of product IDs to get for free
-	    $required_qty = intval($rule['qty']); // required quantity of Buy products
-
-	    $buy_count = 0;
-	    $get_items = [];
-
-	    // First pass: count total quantity of Buy products and collect eligible Get items
-	    foreach ($cart->get_cart() as $key => $item) {
-	        $product_id = $item['product_id'];
-	        $quantity = $item['quantity'];
-
-	        if (in_array($product_id, $buy_ids)) {
-	            $buy_count += $quantity;
-	        }
-
-	        if (in_array($product_id, $get_ids)) {
-	            $get_items[] = $key;
-	        }
-	    }
-
-	    // If the required Buy quantity is met, apply free pricing to Get products
-	    if ($buy_count >= $required_qty) {
-	        foreach ($get_items as $get_key) {
-	            $cart->cart_contents[$get_key]['data']->set_price(0);
-	            $cart->cart_contents[$get_key]['pt_bogo_rule_id'] = $rule['id'] ?? 'bogo_free';
-	            $cart->cart_contents[$get_key]['pt_bogo_rule_label'] = $rule['title'];
-	        }
-	    } else {
-	        // Not eligible: restore original price if needed
-	        foreach ($get_items as $get_key) {
-	            $product = $cart->cart_contents[$get_key]['data'];
-	            if (method_exists($product, 'get_regular_price')) {
-	                // $cart->cart_contents[$get_key]['data']->set_price($product->get_regular_price());
-	                $cart->cart_contents[$get_key]['pt_bogo_rule_label'] = $rule['title'];
-	            }
-	        }
-	    }
-	}
-
-	public function pt_handle_bogo_percent_old($cart, $rule) {
-	    $buy_ids   = $rule['buy_products'];
-	    $get_ids   = $rule['get_products'];
-	    $discount  = $rule['discount'];
-
-	    foreach ($cart->get_cart() as $key => $item) {
-	        // Check if this item qualifies as a 'buy' product
-	        if (in_array($item['product_id'], $buy_ids)) {
-	            foreach ($cart->get_cart() as $get_key => $get_item) {
-	                // Only apply to 'get' items that match and are not the same as the buy item
-	                if (in_array($get_item['product_id'], $get_ids)) {
-	                    // Get current (already discounted, if any) price
-	                    $current_price = $cart->cart_contents[$get_key]['data']->get_price();
-	                    $new_price = $current_price - ($current_price * ($discount / 100));
-
-	                    // Apply new discounted price
-	                    $cart->cart_contents[$get_key]['data']->set_price($new_price);
-
-	                    // Optionally mark it to prevent quantity changes
-	                    $cart->cart_contents[$get_key]['pt_bogo_rule_id'] = $rule['id'];
-	                }
-	            }
 	        }
 	    }
 	}
@@ -575,40 +459,6 @@ class Promotion_Tool_Public {
 	    }
 	}
 
-	public function pt_handle_bogo_free_by_category_old($cart, $rule) {
-	    $buy_categories = $rule['buy_category']; // array of slugs or IDs
-	    $get_categories = $rule['get_category']; // array of slugs or IDs
-
-	    $has_buy_product = false;
-	    $eligible_get_items = [];
-
-	    // Step 1: Check for buy category product presence and collect eligible get category items
-	    foreach ($cart->get_cart() as $key => $item) {
-	        $product_id = $item['product_id'];
-	        $product = wc_get_product($product_id);
-	        $terms = get_the_terms($product_id, 'product_cat');
-	        $product_cats = $terms ? wp_list_pluck($terms, 'slug') : [];
-
-	        // Check if product is from buy category
-	        if (array_intersect($buy_categories, $product_cats)) {
-	            $has_buy_product = true;
-	        }
-
-	        // Collect items from get category for possible discount
-	        if (array_intersect($get_categories, $product_cats)) {
-	            $eligible_get_items[$key] = $product->get_price();
-	        }
-	    }
-
-	    // Step 2: If rule matched, apply free price to cheapest get-category product
-	    if ($has_buy_product && !empty($eligible_get_items)) {
-	        // Get the cart item key of the cheapest product
-	        $cheapest_key = array_keys($eligible_get_items, min($eligible_get_items))[0];
-	        $cart->cart_contents[$cheapest_key]['data']->set_price(0);
-	    }
-	}
-
-
 	/**
 	 * Register the stylesheets for the public-facing side of the site.
 	 *
@@ -653,7 +503,6 @@ class Promotion_Tool_Public {
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/promotion-tool-public.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script('pt-bogo-script', plugin_dir_url(__FILE__) . '/js/pt-bogo.js', ['jquery'], $this->version, false );
-		wp_enqueue_script('sweetalert2', 'https://cdn.jsdelivr.net/npm/sweetalert2@11', [], null, true);
 
 		wp_localize_script('pt-bogo-script', 'pt_bogo_data', [
 	        'ajax_url' => admin_url('admin-ajax.php'),

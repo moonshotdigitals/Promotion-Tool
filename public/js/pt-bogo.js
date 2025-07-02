@@ -1,30 +1,11 @@
 jQuery(document).ready(function($) {
 
-    // Track already shown modals to avoid duplicates
     const shownBogoForProduct = new Set();
 
     /**
      * Render and show the BOGO Reward Modal
      */
     function showBogoRewardModal(data) {
-        // let productList = '<div class="bogo-products"><ul style="list-style:none;padding:0;">';
-
-        // data.products.forEach(prod => {
-        //     productList += `
-        //         <li style="margin-bottom:15px;display:flex;align-items:center;">
-        //             <img src="${prod.image}" alt="${prod.title}" style="width:60px;height:60px;margin-right:10px;border-radius:6px;" />
-        //             <div>
-        //                 <div><strong>${prod.title}</strong></div>
-        //                 <button class="pt-add-bogo-item button" 
-        //                         data-id="${prod.id}" data-rule="${data.rule_id}"
-        //                         style="margin-top:5px;">
-        //                     ${prod.label}
-        //                 </button>
-        //             </div>
-        //         </li>`;
-        // });
-
-        // productList += '</ul></div>';
 
         let productList = '<div class="poup-with-affiliate-unlocked-reward"><ul class="reward-product-list">';
 
@@ -83,15 +64,6 @@ jQuery(document).ready(function($) {
      * Show "Not Qualified Yet" Modal
      */
     function showBogoHintModal(data) {
-        // Swal.fire({
-        //     title: 'Want a reward?',
-        //     text: message,
-        //     icon: 'info',
-        //     confirmButtonText: 'OK',
-        //     customClass: {
-        //         popup: 'bogo-hint-modal'
-        //     }
-        // });
         if(data.type=="bogo_free"){
             $('.with-affiliate-custom-popup.popup1 img').attr('src', $('#buy_get_free').val())
             $('.with-affiliate-custom-popup.popup1 h2.popup-title').html("Want A Free Product<br>As A Reward?")
@@ -234,24 +206,6 @@ jQuery(document).ready(function($) {
                 const data = response.data;
 
                 if (data.status === 'qualified') {
-                    // let productList = '<div class="bogo-products"><ul style="list-style:none;padding:0;">';
-
-                    // data.products.forEach(prod => {
-                    //     productList += `
-                    //         <li style="margin-bottom:15px;display:flex;align-items:center;">
-                    //             <img src="${prod.image}" alt="${prod.title}" style="width:60px;height:60px;margin-right:10px;border-radius:6px;" />
-                    //             <div>
-                    //                 <div><strong>${prod.title}</strong></div>
-                    //                 <button class="pt-add-bogo-item button" 
-                    //                         data-id="${prod.id}" data-rule="${response.data.rule_id}"
-                    //                         style="margin-top:5px;">
-                    //                     ${prod.label}
-                    //                 </button>
-                    //             </div>
-                    //         </li>`;
-                    // });
-
-                    // productList += '</ul></div>';
 
                     let productList = '<div class="poup-with-affiliate-unlocked-reward"><ul class="reward-product-list">';
 
@@ -315,26 +269,18 @@ jQuery(document).ready(function($) {
 });
 
 
-jQuery(document).ready(function($) {
-    // $('.woocommerce-checkout-review-order-table').find('.cart_item').each(function() {
-    //     const $row = $(this);
-    //     const hasBogo = $row.find('span.pt-bogo-rule-id').html()
-    //     console.log("Rule=>"+hasBogo)
-    //     if (hasBogo) {
-    //         $row.find('input.qty').prop('disabled', true).after('<span class="pt-bogo-note" style="font-size:12px; color:#38a169;">Quantity locked by BOGO rule</span>');
-    //     }
-    // });
-    setTimeout(function() {
-        if ($('body').hasClass('woocommerce-checkout')) {
-            $('span.pt-bogo-rule-id').each(function() {
-                console.log($(this).html())  
-                if($(this).html()!=""){ 
-                    $(this).parent().parent().parent().find('.quantity').css('display','none')
-                }
-            })
-        }
-    }, 3000);
-});
+// jQuery(document).ready(function($) {
+//     setTimeout(function() {
+//         if ($('body').hasClass('woocommerce-checkout')) {
+//             $('span.pt-bogo-rule-id').each(function() {
+//                 console.log($(this).html())  
+//                 if($(this).html()!=""){ 
+//                     $(this).parent().parent().parent().find('.quantity').css('display','none')
+//                 }
+//             })
+//         }
+//     }, 5000);
+// });
 
 jQuery(document).ready(function($) {
     $('.with-affiliate-custom-popup .popup-button').on('click', function () {
