@@ -208,15 +208,36 @@
 
 .poup-with-affiliate-unlocked-reward .reward-product-list {
   list-style: none;
-  padding: 0;
+  padding: 0px 2px;
   margin: 0;
-  max-height: 40vh;
+  max-height: 32vh;
   overflow-y: scroll;
 }
 
 .poup-with-affiliate-unlocked-reward .reward-product-list::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  /*display: none; /* Chrome, Safari, Opera */*/
 }
+
+.poup-with-affiliate-unlocked-reward .reward-product-list::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.poup-with-affiliate-unlocked-reward .reward-product-list::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+}
+
+.poup-with-affiliate-unlocked-reward .reward-product-list::-webkit-scrollbar-thumb {
+    background: #FFA241;
+    border-radius: 10px;
+    transition: background 0.3s;
+}
+
+.poup-with-affiliate-unlocked-reward .reward-product-list::-webkit-scrollbar-thumb:hover {
+    background: #FFA241;
+}
+
 
 .poup-with-affiliate-unlocked-reward .reward-product-item {
   background-color: rgb(255, 188, 180, 50%);

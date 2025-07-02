@@ -105,7 +105,7 @@ class Promotion_Tool_Admin {
 	            <!-- <option value="category_bogo" <?php selected($bogo_type, 'category_bogo'); ?>>Category BOGO</option> -->
 	        </select>
 
-	        <?php $this->pt_render_product_selector('pt_buy_products[]', $buy_products,'', 'pt_buy_products','Buy Products(x)',$buy_products_display); ?>
+	        <?php $this->pt_render_product_selector('pt_buy_products[]', $buy_products,'multiple', 'pt_buy_products','Buy Products(x)',$buy_products_display); ?>
 
 	        <?php $this->pt_render_category_selector('pt_buy_category[]', $buy_category_product,'', 'pt_buy_category','Buy Category Product',$buy_category_product_display); ?>
 

@@ -314,7 +314,7 @@ class Promotion_Tool_Public {
 	        $product_id = $item['product_id'];
 	        $quantity   = $item['quantity'];
 
-	        if (in_array($product_id, $buy_ids)) {
+	        if (in_array($product_id, $buy_ids) && !$item['pt_bogo_applied']) {
 	            $buy_count += $quantity;
 	        }
 
@@ -335,14 +335,35 @@ class Promotion_Tool_Public {
 	        }
 	    } else {
 	        // Restore original price if rule is no longer satisfied
-	        foreach ($get_items as $get_key) {
-	            $product = $cart->cart_contents[$get_key]['data'];
-	            $original_price = $product->get_sale_price() ?: $product->get_regular_price();
-	            $product->set_price($original_price);
+	        // foreach ($get_items as $get_key) {
+	        //     $product = $cart->cart_contents[$get_key]['data'];
+	        //     $original_price = $product->get_sale_price() ?: $product->get_regular_price();
+	        //     $product->set_price($original_price);
 
-	            unset($cart->cart_contents[$get_key]['pt_bogo_rule_id']);
-	            unset($cart->cart_contents[$get_key]['pt_bogo_rule_label']);
-	        }
+	        //     unset($cart->cart_contents[$get_key]['pt_bogo_rule_id']);
+	        //     unset($cart->cart_contents[$get_key]['pt_bogo_rule_label']);
+	        // }
+	        foreach ($get_items as $get_key) {
+			    $cart_item = $cart->cart_contents[$get_key];
+
+			    // Get required product info
+			    $product_id = $cart_item['product_id'];
+			    $quantity = $cart_item['quantity'];
+			    $variation_id = isset($cart_item['variation_id']) ? $cart_item['variation_id'] : 0;
+			    $variation = isset($cart_item['variation']) ? $cart_item['variation'] : [];
+			    $cart_item_data = $cart_item;
+
+			    // Remove custom BOGO data before re-adding
+			    unset($cart_item_data['pt_bogo_rule_id']);
+			    unset($cart_item_data['pt_bogo_rule_label']);
+			    unset($cart_item_data['pt_bogo_applied']);
+
+			    // Remove from cart
+			    $cart->remove_cart_item($get_key);
+
+			    // Re-add product with original price and clean data
+			    WC()->cart->add_to_cart($product_id, $quantity, $variation_id, $variation, $cart_item_data);
+			}
 	    }
 	}
 
@@ -360,7 +381,7 @@ class Promotion_Tool_Public {
 	        $product_id = $item['product_id'];
 	        $quantity   = $item['quantity'];
 
-	        if (in_array($product_id, $buy_ids)) {
+	        if (in_array($product_id, $buy_ids) && !$item['pt_bogo_applied']) {
 	            $buy_count += $quantity;
 	        }
 
@@ -387,17 +408,40 @@ class Promotion_Tool_Public {
 	        }
 	    } else {
 	        // Condition not satisfied anymore, restore original price
-	        foreach ($eligible_get_items as $get_key) {
-	            $product = $cart->cart_contents[$get_key]['data'];
+	        // foreach ($eligible_get_items as $get_key) {
+	        //     $product = $cart->cart_contents[$get_key]['data'];
 
-	            if (method_exists($product, 'get_regular_price')) {
-	                $original_price = $product->get_sale_price() ?: $product->get_regular_price();
-	                $product->set_price($original_price);
-	            }
+	        //     if (method_exists($product, 'get_regular_price')) {
+	        //         $original_price = $product->get_sale_price() ?: $product->get_regular_price();
+	        //         $product->set_price($original_price);
+	        //     }
 
-	            unset($cart->cart_contents[$get_key]['pt_bogo_rule_id']);
-	            unset($cart->cart_contents[$get_key]['pt_bogo_rule_label']);
-	        }
+	        //     unset($cart->cart_contents[$get_key]['pt_bogo_rule_id']);
+	        //     unset($cart->cart_contents[$get_key]['pt_bogo_rule_label']);
+	        // }
+
+	        foreach ($get_items as $get_key) {
+			    $cart_item = $cart->cart_contents[$get_key];
+
+			    // Get required product info
+			    $product_id = $cart_item['product_id'];
+			    $quantity = $cart_item['quantity'];
+			    $variation_id = isset($cart_item['variation_id']) ? $cart_item['variation_id'] : 0;
+			    $variation = isset($cart_item['variation']) ? $cart_item['variation'] : [];
+			    $cart_item_data = $cart_item;
+
+			    // Remove custom BOGO data before re-adding
+			    unset($cart_item_data['pt_bogo_rule_id']);
+			    unset($cart_item_data['pt_bogo_rule_label']);
+			    unset($cart_item_data['pt_bogo_applied']);
+
+			    // Remove from cart
+			    $cart->remove_cart_item($get_key);
+
+			    // Re-add product with original price and clean data
+			    WC()->cart->add_to_cart($product_id, $quantity, $variation_id, $variation, $cart_item_data);
+			}
+
 	    }
 	}
 

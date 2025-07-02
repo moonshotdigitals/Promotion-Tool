@@ -155,16 +155,32 @@ class Promotion_Tool {
 	    });
 
 	    // Count total quantity of Buy product in cart
-	    $product_qty = 0;
-	    foreach (WC()->cart->get_cart() as $cart_item) {
-	        if ((int)$cart_item['product_id'] === $product_id) {
-	            $product_qty += $cart_item['quantity'];
-	        }
-	    }
+	    // $product_qty = 0;
+	    // foreach (WC()->cart->get_cart() as $cart_item) {
+	    //     if ((int)$cart_item['product_id'] === $product_id) {
+	    //         $product_qty += $cart_item['quantity'];
+	    //     }
+	    // }
+
+	    // wp_send_json_success([
+	    //         'all_rules'       => $rules
+	    //     ]);
+
+	    $alreadyDone = false;
 
 	    foreach ($rules as $rule) {
 	        if (!in_array($product_id, (array) $rule['buy_products'])) {
 	            continue;
+	        }
+
+	        foreach (WC()->cart->get_cart() as $cart_item) {
+	        	if (!empty($cart_item['pt_bogo_applied']) || $cart_item['pt_bogo_applied'] ) {
+	        		$alreadyDone = true;
+	        	}
+	        }
+
+	        if($alreadyDone){
+	        	continue;
 	        }
 
 	        $required_qty     = intval($rule['qty']);
@@ -175,6 +191,14 @@ class Promotion_Tool {
 
 	        $already_in_cart = false;
 	        $manually_added  = false;
+
+	        $product_qty = 0;
+
+		    foreach (WC()->cart->get_cart() as $cart_item) {
+		        if (in_array($cart_item['product_id'], $buy_product_ids)) {
+		        	$product_qty += $cart_item['quantity'];
+		        }
+		    }
 
 	        foreach (WC()->cart->get_cart() as $cart_item) {
 	            if (in_array($cart_item['product_id'], $get_product_ids)) {
