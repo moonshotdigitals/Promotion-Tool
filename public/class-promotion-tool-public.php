@@ -92,6 +92,9 @@ class Promotion_Tool_Public {
 		        Want A Free Product<br>As A Reward?
 		      </h2>
 
+		      <p class="popup-subtitle-top">
+		      </p>
+
 		      <p class="popup-subtitle">
 		        Add 2 more to unlock: Get 1 free!
 		      </p>

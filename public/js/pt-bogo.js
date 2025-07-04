@@ -73,6 +73,7 @@ jQuery(document).ready(function($) {
         }
         $('.with-affiliate-custom-popup.popup1').css('display', 'block')
         $('.with-affiliate-custom-popup.popup1 .popup-subtitle').html(data.message)
+        $('.with-affiliate-custom-popup.popup1 .popup-subtitle-top').html(data.title)
     }
 
     /**

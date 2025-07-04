@@ -319,8 +319,13 @@
     text-align: center;
 }
 
-.with-affiliate-custom-popup .popup-title, .with-affiliate-custom-popup .popup-subtitle, .with-affiliate-custom-popup button{
+.with-affiliate-custom-popup .popup-title, .with-affiliate-custom-popup .popup-subtitle, .with-affiliate-custom-popup button, .with-affiliate-custom-popup .popup-subtitle-top{
     font-family: "Quicksand", Sans-serif;
+}
+
+.with-affiliate-custom-popup .popup-subtitle-top{
+    color: rgb(253,160,66);
+    margin-bottom: unset;
 }
 
 .woocommerce-checkout .bogo-applied .quantity {
