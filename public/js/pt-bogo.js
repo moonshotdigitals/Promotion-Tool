@@ -292,3 +292,9 @@ jQuery(document).ready(function($) {
       $('.poup-with-affiliate-unlocked-reward.popup2').fadeOut();
     });
 })
+
+jQuery(document).ready(function($) {
+    setInterval(function() {
+       $('button.slick-nav.slick-next.style-2.slick-arrow').click();
+    }, 10000); // 500 ms delay
+});
