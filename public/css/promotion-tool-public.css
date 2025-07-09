@@ -336,5 +336,5 @@ button.slick-nav.slick-next.style-2.slick-arrow, button.slick-nav.slick-prev.sty
     display: none !important;
 }
 .wd-content-layout {
-    padding-block: unset !important;
+    /*padding-block: unset !important;*/
 }
